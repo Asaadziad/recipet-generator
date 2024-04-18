@@ -1,1 +1,1 @@
-# recipet-generator
+# Recipet Generator
