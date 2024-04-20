@@ -48,17 +48,18 @@ function tableExists(DB, tableName){
 }
 
 
+
 // DB : string - expects the name of the database
 function DBControl(DB) {
     
     if(!isConnected(DB)) throw new Error(messages.DB_CONNECTION_ERROR) 
     
-    const create = function createTable(tableName, ...cols) {
+    function createTable(tableName, ...cols) {
         cols.forEach((val) => {
             if(typeof val != 'string') throw new Error(messages.INVALID_ARGUEMNT)
         })
         let line = cols.reduce((accumelated, current_value) => accumelated + current_value+ ",", "")
-        fs.writeFileSync(DB + '/' + tableName,line, (err) => {
+        fs.writeFileSync(DB + '/' + tableName +".csv",line, (err) => {
         if(err) {
             ERR(err)
             throw new Error(messages.FAILURE)
@@ -90,19 +91,16 @@ function DBControl(DB) {
     }
 
     return {
-            createTable: create,
+            createTable: createTable,
             insertRow: insertRow,
             printTable: printTable
            } 
 }
 
-const dbs = DBControl('db')
-dbs.createTable('test', "he","world") 
-dbs.insertRow('employees', "he","ho","ha")
-dbs.printTable('employees')
+
 
 
 module.exports = {
     DBConnect,
-    
+    DBControl, 
 }

@@ -1,6 +1,7 @@
 const http = require('http')
 const fs = require('fs')
 const path = require('path')
+const { DBConnect, DBControl } = require('./db')
 
 class Server {
 	constructor() {
@@ -40,7 +41,8 @@ class Server {
 
 }
 const server = new Server()
-
+const db = DBConnect('db')
+const db_actions = DBControl('db')
 
 server.get('/', (req, res) => {
 	fs.readFile('index.html',(err,data) => {
@@ -59,7 +61,9 @@ server.get('/add', (req, res) => {
 			req.body += chunk.toString()
 		})	
 		req.on('end', () => {
-			console.log(body)	
+			const employee = JSON.parse(req.body)
+			 	
+			db_actions.insertRow('employees', employee.username, 0, employee.site, employee.workhours)	
 		})
 	}	
     res.writeHead(200, {'Content-Type': 'application/json'})
